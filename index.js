@@ -1,5 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
 const { gameOptions, againOptions } = require('./options');
+const sequelize = require('./db');
 const token = "7188092819:AAE4xRCYb-hHgOoNsT8g_1nyyic08msSLh4";
 const bot = new TelegramBot(token, { polling: true });
 
@@ -14,6 +15,14 @@ const startGame = async (chatId) => {
 }
 
 const startBot = async () => {
+
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync();
+  } catch (error) {
+    console.log("Connect to database was with error: " + error);
+  }
+
   bot.setMyCommands([
     { command: '/start', description: 'Start working with a bot' },
     { command: '/info', description: 'Get information about yourself' },
